@@ -20,8 +20,8 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'is_active' => $this->is_active,
-            'restaurant_id' => $this->restaurant_id,
-            'userCount' => User::count(),
+            'organization_id' => $this->organization_id,
+            'user_count' => User::count(),
             'session' => session()->all(),
         ];
     }
