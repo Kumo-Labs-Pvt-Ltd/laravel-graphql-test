@@ -1,71 +1,71 @@
+version: '3.8'
+
 services:
+
   app:
     build:
-      context: ./docker/php
+      context: ./src
+      dockerfile: ../docker/php/Dockerfile
     container_name: laravel-app
+    restart: unless-stopped
+    working_dir: /var/www/html
     volumes:
       - ./src:/var/www/html
-    ports:
-      - "9000:9000"
     networks:
-      - laravel
+      - laravel-net
+    depends_on:
+      - db
 
-  web:
-    image: nginx:latest
+  nginx:
+    image: nginx:alpine
     container_name: laravel-nginx
+    restart: unless-stopped
     ports:
-      - "8081:80"
+      - "8000:80"                     # ← you can change to "80:80" if desired
     volumes:
       - ./src:/var/www/html
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - laravel-net
     depends_on:
       - app
-    networks:
-      - laravel
 
   db:
     image: mysql:8.0
     container_name: laravel-db
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: laravel
+      MYSQL_DATABASE:      ${DB_DATABASE:-expense-tracker}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root-secret}
+      MYSQL_PASSWORD:      ${DB_PASSWORD:-expense-pass}
+      MYSQL_USER:          ${DB_USERNAME:-expense-user}
     volumes:
       - db-data:/var/lib/mysql
     ports:
-      - "3307:3306"
+      - "3307:3306"                   # avoids conflict with local MySQL
     networks:
-      - laravel
-
-  node:
-    image: node:18
-    container_name: laravel-node
-    working_dir: /var/www/html
-    volumes:
-      - ./src:/var/www/html
-    command: sh -c "npm install && npm run dev"
-    networks:
-      - laravel
+      - laravel-net
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    platform: linux/amd64
-    container_name: laravel-phpmyadmin
-    depends_on:
-      - db
-    ports:
-      - "8082:80"
+    image: phpmyadmin:apache
+    container_name: laravel-pma
+    restart: unless-stopped
     environment:
       PMA_HOST: db
       PMA_PORT: 3306
-      PMA_USER: laravel
-      PMA_PASSWORD: laravel
+      PMA_USER: root
+      PMA_PASSWORD: ${DB_ROOT_PASSWORD:-root-secret}
+      UPLOAD_LIMIT: 128M
+    ports:
+      - "8081:80"
     networks:
-      - laravel
+      - laravel-net
+    depends_on:
+      - db
+
+networks:
+  laravel-net:
+    driver: bridge
 
 volumes:
   db-data:
-
-networks:
-  laravel:
