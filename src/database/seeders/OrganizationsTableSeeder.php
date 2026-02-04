@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -27,7 +26,7 @@ class OrganizationsTableSeeder extends Seeder
                 'joined_date' => now(),
                 'expiry_date' => now()->addYear(),
                 'is_active' => true,
-            ]
+            ],
         ]);
     }
 }

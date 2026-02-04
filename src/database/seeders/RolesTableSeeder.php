@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
@@ -18,123 +17,123 @@ class RolesTableSeeder extends Seeder
         DB::table('roles')->insert([
             [
                 'name' => 'superadmin',
-                'guard_name' => 'web'
+                'guard_name' => 'web',
             ],
             [
                 'name' => 'admin',
-                'guard_name' => 'web'
+                'guard_name' => 'web',
             ],
             [
                 'name' => 'manager',
-                'guard_name' => 'web'
+                'guard_name' => 'web',
             ],
 
         ]);
 
         DB::table('permissions')->insert([
-            //Permission Permission
+            // Permission Permission
             [
                 'name' => 'create-permission',
                 'guard_name' => 'web',
-                'permission_group' => 'permission'
+                'permission_group' => 'permission',
             ],
 
             [
                 'name' => 'update-permission',
                 'guard_name' => 'web',
-                'permission_group' => 'permission'
+                'permission_group' => 'permission',
             ],
 
             [
                 'name' => 'delete-permission',
                 'guard_name' => 'web',
-                'permission_group' => 'permission'
+                'permission_group' => 'permission',
             ],
 
             [
                 'name' => 'view-permission',
                 'guard_name' => 'web',
-                'permission_group' => 'permission'
+                'permission_group' => 'permission',
             ],
 
-            //User Controller
+            // User Controller
             [
                 'name' => 'create-user',
                 'guard_name' => 'web',
-                'permission_group' => 'user'
+                'permission_group' => 'user',
             ],
 
             [
                 'name' => 'update-user',
                 'guard_name' => 'web',
-                'permission_group' => 'user'
+                'permission_group' => 'user',
             ],
 
             [
                 'name' => 'delete-user',
                 'guard_name' => 'web',
-                'permission_group' => 'user'
+                'permission_group' => 'user',
             ],
 
             [
                 'name' => 'view-user',
                 'guard_name' => 'web',
-                'permission_group' => 'user'
+                'permission_group' => 'user',
             ],
-            //Organization Controller
+            // Organization Controller
             [
                 'name' => 'create-organization',
                 'guard_name' => 'web',
-                'permission_group' => 'organization'
+                'permission_group' => 'organization',
             ],
 
             [
                 'name' => 'update-organization',
                 'guard_name' => 'web',
-                'permission_group' => 'organization'
+                'permission_group' => 'organization',
             ],
 
             [
                 'name' => 'delete-organization',
                 'guard_name' => 'web',
-                'permission_group' => 'organization'
+                'permission_group' => 'organization',
             ],
 
             [
                 'name' => 'view-organization',
                 'guard_name' => 'web',
-                'permission_group' => 'organization'
+                'permission_group' => 'organization',
             ],
-            
+
             // TransactionSource Controller
             [
                 'name' => 'create-transaction-source',
                 'guard_name' => 'web',
-                'permission_group' => 'transaction-source'
+                'permission_group' => 'transaction-source',
             ],
             [
                 'name' => 'update-transaction-source',
                 'guard_name' => 'web',
-                'permission_group' => 'transaction-source'
+                'permission_group' => 'transaction-source',
             ],
 
             [
                 'name' => 'delete-transaction-source',
                 'guard_name' => 'web',
-                'permission_group' => 'transaction-source'
+                'permission_group' => 'transaction-source',
             ],
 
             [
                 'name' => 'view-transaction-source',
                 'guard_name' => 'web',
-                'permission_group' => 'transaction-source'
+                'permission_group' => 'transaction-source',
             ],
 
-            //Settings Controller
+            // Settings Controller
             [
                 'name' => 'update-setting',
                 'guard_name' => 'web',
-                'permission_group' => 'setting'
+                'permission_group' => 'setting',
             ],
 
         ]);
