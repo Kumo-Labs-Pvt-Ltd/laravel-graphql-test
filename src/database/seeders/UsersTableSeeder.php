@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -21,42 +20,42 @@ class UsersTableSeeder extends Seeder
                 'email' => 'superadmin@ledgerapp.com',
                 'password' => Hash::make('password'),
                 'organization_id' => null,
-                'is_active'=>true,
+                'is_active' => true,
             ],
             [
                 'name' => 'Admin',
                 'email' => 'admin@ledgerapp.com',
                 'password' => Hash::make('password'),
                 'organization_id' => null,
-                'is_active'=>true,
+                'is_active' => true,
             ],
             [
                 'name' => 'Employee',
                 'email' => 'employee@ledgerapp.com',
                 'password' => Hash::make('password'),
                 'organization_id' => null,
-                'is_active'=>true,
+                'is_active' => true,
             ],
             [
                 'name' => 'Sushant KC',
                 'email' => 'sushant@eskecy.com',
                 'password' => Hash::make('password'),
                 'organization_id' => 1,
-                'is_active'=>true,
+                'is_active' => true,
             ],
             [
                 'name' => 'Ishan Kc',
                 'email' => 'ishan@eskecy.com',
                 'password' => Hash::make('password'),
                 'organization_id' => 1,
-                'is_active'=>true,
+                'is_active' => true,
             ],
             [
                 'name' => 'Suresh Karn',
                 'email' => 'suresh@chhoriwears.com',
                 'password' => Hash::make('password'),
                 'organization_id' => 2,
-                'is_active'=>true,
+                'is_active' => true,
             ],
 
         ]);
@@ -68,6 +67,5 @@ class UsersTableSeeder extends Seeder
         User::find(4)->assignRole('admin');
         User::find(5)->assignRole('manager');
         User::find(6)->assignRole('admin');
-        User::find(7)->assignRole('manager');
     }
 }
