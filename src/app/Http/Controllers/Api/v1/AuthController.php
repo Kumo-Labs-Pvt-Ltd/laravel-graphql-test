@@ -44,7 +44,6 @@ class AuthController extends BaseController
                 $success['id'] = $user->id;
                 $success['name'] = $user->name;
                 $success['email'] = $user->email;
-                // $success['role']    = $user->role->name;
 
                 return $this->sendResponse('Logged In Successfully', ['token' => $success['token'], 'user' => new UserResource($user)], 200);
             } else {
@@ -150,7 +149,7 @@ class AuthController extends BaseController
 
             $user = User::where('email', $request->email)->first();
 
-            if (! $user) {
+            if (!$user) {
                 // Return success message anyway to prevent enumeration
                 return $this->sendResponse(
                     'Password reset link sent to your email',
@@ -223,12 +222,12 @@ class AuthController extends BaseController
                 ->where('email', $request->email)
                 ->first();
 
-            if (! $resetRecord) {
+            if (!$resetRecord) {
                 return $this->sendError('Invalid or expired reset token', null, 400);
             }
 
             // Verify token matches
-            if (! Hash::check($request->token, $resetRecord->token)) {
+            if (!Hash::check($request->token, $resetRecord->token)) {
                 return $this->sendError('Invalid reset token', null, 400);
             }
 
@@ -295,11 +294,11 @@ class AuthController extends BaseController
             ->where('email', $request->email)
             ->first();
 
-        if (! $resetRecord) {
+        if (!$resetRecord) {
             return $this->sendError('Password Reset Link Has Been Expired', null, 400);
         }
 
-        if (! Hash::check($request->token, $resetRecord->token)) {
+        if (!Hash::check($request->token, $resetRecord->token)) {
             return $this->sendError('Password Reset Link Has Been Expired', null, 400);
         }
 
@@ -340,7 +339,7 @@ class AuthController extends BaseController
         try {
             $user = auth('sanctum')->user();
 
-            if (! $user) {
+            if (!$user) {
                 return $this->sendError('Unauthenticated', null, 401);
             }
 

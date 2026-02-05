@@ -19,7 +19,7 @@ class BaseController extends Controller
         if ($data instanceof \Illuminate\Pagination\LengthAwarePaginator) {
             $resourceClass = $resourceClass ?? $this->defaultResourceClass ?? null;
 
-            if (! $resourceClass) {
+            if (!$resourceClass) {
                 throw new \Exception('Resource class is required for paginated responses in '.static::class);
             }
 
@@ -49,7 +49,7 @@ class BaseController extends Controller
         }
         // CASE 3: Single resource or raw data
         else {
-            if ($resourceClass && ! ($data instanceof \Illuminate\Http\Resources\Json\JsonResource)) {
+            if ($resourceClass && !($data instanceof \Illuminate\Http\Resources\Json\JsonResource)) {
                 $data = new $resourceClass($data);
             }
             $response['data'] = $data instanceof \Illuminate\Http\Resources\Json\JsonResource
