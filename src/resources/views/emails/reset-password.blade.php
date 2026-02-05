@@ -100,7 +100,7 @@
 
 <body>
     <div class="logo">
-        <img src="{{ asset('assets/images/logo.jpg') }}" Logo">
+        <img src="{{ asset('assets/images/logo.jpg') }}" alt="Logo">
     </div>
 
     <p>Hi {{ $user->name }},</p>
@@ -130,7 +130,7 @@
 
     <div class="footer">
         <p class="footer-text">
-            Feel free to contact us at <span class="contact-info">{{ env('MAIL_FROM_ADDRESS') }}</span>
+            Feel free to contact us at <span class="contact-info">{{ config('mail.from.address') }}</span>
         </p>
 
         <p class="disclaimer">This is an automated email. Please do not reply to this message.</p>

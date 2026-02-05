@@ -78,38 +78,46 @@ class AuthController extends BaseController
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|unique:users,email',
-                'password' => 'required|string|min:6|confirmed',
+                'password' => 'required|string|min:8|confirmed',
             ]);
 
             if ($validator->fails()) {
                 return $this->sendError('Validation Failed.', $validator->errors(), 422);
             }
 
-            // Create Organization
-            $organization = Organization::create([
-                'name' => $request->name,
-                'slug' => Str::slug($request->name).'-'.Str::random(6),
-                'joined_date' => now(),
-                'is_active' => true,
-            ]);
+            $result = DB::transaction(function () use ($request) {
 
-            // Create User
-            $user = User::create([
-                'organization_id' => $organization->id,
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'is_active' => true,
-            ]);
+                // Create Organization
+                $organization = Organization::create([
+                    'name' => $request->name,
+                    'slug' => Str::slug($request->name) . '-' . Str::random(6),
+                    'joined_date' => now(),
+                    'is_active' => true,
+                ]);
 
-            // Create Token
-            $token = $user->createToken('LedgerApp')->plainTextToken;
+                // Create User
+                $user = User::create([
+                    'organization_id' => $organization->id,
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                    'is_active' => true,
+                ]);
+
+                // Create Token
+                $token = $user->createToken('LedgerApp')->plainTextToken;
+
+                return [
+                    'token' => $token,
+                    'user' => $user,
+                ];
+            });
 
             return $this->sendResponse(
                 'Registered Successfully',
                 [
-                    'token' => $token,
-                    'user' => new UserResource($user),
+                    'token' => $result['token'],
+                    'user' => new UserResource($result['user']),
                 ],
                 201
             );
@@ -149,14 +157,6 @@ class AuthController extends BaseController
 
             $user = User::where('email', $request->email)->first();
 
-            if (!$user) {
-                // Return success message anyway to prevent enumeration
-                return $this->sendResponse(
-                    'Password reset link sent to your email',
-                    null,
-                    200
-                );
-            }
             // Generate random token
             $token = Str::random(64);
 
@@ -171,10 +171,10 @@ class AuthController extends BaseController
             ]);
 
             // Create reset URL for frontend
-            $resetUrl = env('SITE_URL').'/reset-password?token='.$token.'&email='.urlencode($request->email);
+            $resetUrl = config('app.site_url') . '/reset-password?token=' . $token . '&email=' . urlencode($request->email);
 
             // Send email with reset link
-            Mail::to($user->email)->send(new ResetPasswordMail($user, $resetUrl, $token));
+            Mail::to($user->email)->send(new ResetPasswordMail($user, $resetUrl));
 
             return $this->sendResponse(
                 'Password reset link sent to your email',
@@ -241,7 +241,7 @@ class AuthController extends BaseController
             // Update user password
             $user = User::where('email', $request->email)->first();
             $user->update([
-                'password' => bcrypt($request->password),
+                'password' => Hash::make($request->password),
             ]);
 
             // Delete the used token
@@ -285,14 +285,19 @@ class AuthController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            if ($validator->fails()) {
-                return $this->sendError('Validation Failed.', $validator->errors(), 422);
-            }
+            return $this->sendError('Validation Failed.', $validator->errors(), 422);
         }
 
         $resetRecord = DB::table('password_reset_tokens')
             ->where('email', $request->email)
             ->first();
+
+        // Check if token is expired (60 minutes)
+        if (Carbon::parse($resetRecord->created_at)->addMinutes(60)->isPast()) {
+            DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+            return $this->sendError('Reset token has expired. Please request a new one', null, 400);
+        }
 
         if (!$resetRecord) {
             return $this->sendError('Password Reset Link Has Been Expired', null, 400);
